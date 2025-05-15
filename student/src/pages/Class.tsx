@@ -180,7 +180,7 @@ const LiveClassPage = () => {
   return (
     <div>
       <Header title={"Live Class Management"} />
-      <div className="p-6">
+      <div className="p-6 mt-20">
         {activeTab === "classes" && (
           <>
             <div className="bg-white rounded-lg shadow p-4 mb-6">

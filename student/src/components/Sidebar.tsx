@@ -45,11 +45,11 @@ const Sidebar: React.FC<{
       label: "Assignments",
       icon: <AssignmentIcon />,
     },
-    {
-      path: "/EnrollmentStatus",
-      label: "Enrollment Status",
-      icon: <GradingIcon />,
-    },
+    // {
+    //   path: "/EnrollmentStatus",
+    //   label: "Enrollment Status",
+    //   icon: <GradingIcon />,
+    // },
   ];
 
   return (

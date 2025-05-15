@@ -7,6 +7,7 @@ const assignmentRoutes = require("./routes/assignmentRoutes");
 const submissionRoutes = require("./routes/submissionRoutes");
 const materialsRoutes = require("./routes/materialsRoutes");
 const gradeRoutes = require("./routes/gradeRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/material", materialsRoutes);
 app.use("/api/grades", gradeRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -7,6 +7,7 @@ import {
   FiUpload,
 } from "react-icons/fi";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 
 const StatCard = ({ icon, title, value, change }) => (
@@ -57,9 +58,10 @@ const AnnouncementItem = ({ announcement }) => (
   </div>
 );
 
-const QuickActionButton = ({ icon: Icon, color, label }) => (
+const QuickActionButton = ({ icon: Icon, color, label, onClick }) => (
   <button
     className={`flex flex-col items-center p-4 border rounded-lg hover:bg-${color}-50 transition-colors`}
+    onClick={onClick}
   >
     <div className={`p-3 bg-${color}-100 rounded-full mb-2 text-${color}-600`}>
       <Icon size={20} />
@@ -140,78 +142,61 @@ const OverviewPage = () => {
       urgent: false,
     },
   ];
-
+const navigate = useNavigate();
   const quickActions = [
     {
       icon: FiFileText,
       color: "blue",
       label: "Create Assignment",
+      onclick: () => navigate("/Assignments"),
     },
     {
       icon: FiUpload,
       color: "green",
       label: "Upload Resources",
+      onclick: () => navigate("/ResourceUpload"),
     },
     {
       icon: FiVideo,
       color: "purple",
       label: "Schedule Class",
+      onclick: () => navigate("/Class"),
     },
     {
       icon: FiUsers,
       color: "yellow",
       label: "Add Student",
+      onclick: () => navigate("/Student%20Enrollment"),
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="">
+      <div>
       <Header title={"Dashboard"} />
-      <div className="space-y-6 p-4 md:p-6">
-       
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <StatCard key={`stat-${index}`} {...stat} />
-          ))}
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-       
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Upcoming Sessions</h2>
-              <button className="text-blue-500 hover:text-blue-700 text-sm font-medium">
-                View All
-              </button>
-            </div>
-            <div className="space-y-4">
-              {upcomingSessions.map((session) => (
-                <SessionItem key={`session-${session.id}`} session={session} />
-              ))}
-            </div>
+      </div>
+      <div className="space-y-6 p-4 md:p-6 mt-20">
+         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl p-6 shadow">
+            <h2 className="text-2xl font-bold mb-2">
+              Welcome back, Teacher!{" "}
+              {
+                (() => {
+                  const userStr = localStorage.getItem("userData");
+                  if (!userStr) return "";
+                  try {
+                    const user = JSON.parse(userStr);
+                    return user?.username
+ ?? "";
+                  } catch {
+                    return "";
+                  }
+                })()
+              }
+            </h2>
+            
           </div>
-
-        
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Recent Announcements</h2>
-              <button className="text-blue-500 hover:text-blue-700 text-sm font-medium">
-                View All
-              </button>
-            </div>
-            <div className="space-y-4">
-              {recentAnnouncements.map((announcement) => (
-                <AnnouncementItem
-                  key={`announcement-${announcement.id}`}
-                  announcement={announcement}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        
-        <div className="bg-white rounded-lg shadow p-6">
+         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
@@ -220,10 +205,17 @@ const OverviewPage = () => {
                 icon={action.icon}
                 color={action.color}
                 label={action.label}
+                onClick={action.onclick}
               />
             ))}
           </div>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, index) => (
+            <StatCard key={`stat-${index}`} {...stat} />
+          ))}
+        </div>
+ 
       </div>
     </div>
   );

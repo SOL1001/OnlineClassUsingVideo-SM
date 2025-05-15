@@ -52,49 +52,7 @@ const GradeSubmissionPage = () => {
     ] as RubricItem[],
   };
 
-  const submissions: Submission[] = [
-    {
-      id: "SUB-001",
-      student: {
-        id: "STU-001",
-        name: "John Doe",
-        avatar: "JD",
-        email: "john@example.com",
-      },
-      submittedAt: "2023-07-14T14:30:00",
-      files: ["algebra_homework.pdf", "calculations.xlsx"],
-      status: "submitted",
-    },
-    {
-      id: "SUB-002",
-      student: {
-        id: "STU-002",
-        name: "Jane Smith",
-        avatar: "JS",
-        email: "jane@example.com",
-      },
-      submittedAt: "2023-07-16T09:15:00",
-      files: ["algebra_assignment.pdf"],
-      grade: 85,
-      feedback: "Good work but missed some steps in problem 3",
-      status: "graded",
-    },
-    {
-      id: "SUB-003",
-      student: {
-        id: "STU-003",
-        name: "Alex Johnson",
-        avatar: "AJ",
-        email: "alex@example.com",
-      },
-      submittedAt: "2023-07-10T11:45:00",
-      files: ["math_hw.docx"],
-      grade: 92,
-      feedback: "Excellent work!",
-      status: "graded",
-    },
-  ];
-
+ 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSubmission, setSelectedSubmission] =
     useState<Submission | null>(null);
@@ -103,9 +61,7 @@ const GradeSubmissionPage = () => {
   const [activeTab, setActiveTab] = useState("submissions");
 
   // Filter submissions
-  const filteredSubmissions = submissions.filter((sub) =>
-    sub.student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+ 
 
   const handleRubricChange = (
     id: string,
@@ -284,7 +240,7 @@ const GradeSubmissionPage = () => {
   return (
     <div>
       <Header title="Grade Submission" />
-      <div className="p-6">
+      <div className="p-6 mt-20">
         {/* Assignment Header */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -316,7 +272,7 @@ const GradeSubmissionPage = () => {
             }`}
             onClick={() => setActiveTab("submissions")}
           >
-            Submissions ({submissions.length})
+            Submissions 
           </button>
           <button
             className={`px-4 py-2 font-medium ${
