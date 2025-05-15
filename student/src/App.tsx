@@ -16,6 +16,8 @@ import Assignments from "./pages/Assignments";
 import ResourceUpload from "./pages/CourseMaterials";
 import Notifications from "./pages/Notifications";
 import Class from "./pages/Class";
+import Video from "./pages/video/Class";
+import ProfilePage from "./pages/ProfilePage";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -38,6 +40,8 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
     setIsLoggedIn(false);
   };
 
@@ -152,6 +156,22 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute isLoggedIn={isLoggedIn}>
                   <Class />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Video"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <Video />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

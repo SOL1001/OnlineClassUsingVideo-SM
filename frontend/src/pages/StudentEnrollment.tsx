@@ -13,7 +13,6 @@ import Header from "../components/Header";
 import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 const StudentEnrollmentPage = () => {
- 
   const courses = ["All Courses", "Mathematics", "Science", "English"];
   const statuses = ["All Statuses", "active", "pending", "rejected"];
 
@@ -27,8 +26,8 @@ const StudentEnrollmentPage = () => {
   const [success, setSuccess] = useState("");
 
   const handleRegister = async () => {
-    setError(""); 
-    setSuccess(""); 
+    setError("");
+    setSuccess("");
 
     const response = await fetch("http://localhost:5000/api/users/register", {
       method: "POST",
@@ -48,12 +47,10 @@ const StudentEnrollmentPage = () => {
 
   const handleApprove = (id: string) => {
     console.log(`Approved student ${id}`);
-    
   };
 
   const handleReject = (id: string) => {
     console.log(`Rejected student ${id}`);
-    
   };
   const [data, setData] = useState<any[]>([]);
   const [total2, setTotal2] = useState(0);
@@ -61,7 +58,6 @@ const StudentEnrollmentPage = () => {
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/users/students", {
-        
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,

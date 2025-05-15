@@ -7,6 +7,7 @@ import GradingIcon from "@mui/icons-material/Grading";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 // import SchoolIcon from "@mui/icons-material/School";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
+import logo from "../assets/logo.png";
 interface NavItem {
   path: string;
   label: string;
@@ -59,7 +60,11 @@ const Sidebar: React.FC<{
     >
       <div className="flex flex-col h-full">
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h1 className="text-2xl font-bold truncate">Teacher</h1>
+          <img src={logo} alt="logo" className="w-[50px] h-[50px]" />
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold truncate">RADA COLLAGE</h1>
+            <p className="text-sm">Debire Birhan Branch</p>
+          </div>{" "}
           <button
             onClick={toggleSidebar}
             className="md:hidden p-1 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"

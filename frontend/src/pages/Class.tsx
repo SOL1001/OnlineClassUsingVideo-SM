@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
+import { Link } from "react-router-dom";
 
 type LiveClass = {
   id: string;
@@ -30,13 +31,12 @@ type LiveClass = {
 };
 
 const LiveClassPage = () => {
-  
   const [classes, setClasses] = useState<LiveClass[]>([
     {
       id: "LC-001",
       title: "Algebra Fundamentals",
       course: "Mathematics",
-      schedule: new Date(Date.now() + 3600000), 
+      schedule: new Date(Date.now() + 3600000),
       duration: 60,
       status: "upcoming",
       participants: 0,
@@ -45,7 +45,7 @@ const LiveClassPage = () => {
       id: "LC-002",
       title: "Chemical Reactions",
       course: "Science",
-      schedule: new Date(Date.now() - 1800000), 
+      schedule: new Date(Date.now() - 1800000),
       duration: 45,
       status: "ongoing",
       participants: 18,
@@ -87,7 +87,6 @@ const LiveClassPage = () => {
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [activeTab, setActiveTab] = useState("classes");
 
- 
   const filteredClasses = classes.filter((liveClass) => {
     const matchesSearch = liveClass.title
       .toLowerCase()
@@ -173,7 +172,7 @@ const LiveClassPage = () => {
           return c;
         })
       );
-    }, 60000); // Check every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -182,221 +181,8 @@ const LiveClassPage = () => {
     <div>
       <Header title={"Live Class Management"} />
       <div className="p-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <div>
-            {/* <h1 className="text-2xl font-bold">Live Classes</h1> */}
-            <p className="text-gray-600">
-              Schedule and conduct live virtual classes
-            </p>
-          </div>
-          <button
-            onClick={() => setIsCreating(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
-            <FiPlus /> Schedule Class
-          </button>
-        </div>
-
-     
-        {isCreating && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">Schedule New Class</h2>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Class Title
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={newClass.title}
-                    onChange={(e) =>
-                      setNewClass({ ...newClass, title: e.target.value })
-                    }
-                    placeholder="Introduction to Algebra"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Course
-                  </label>
-                  <select
-                    className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={newClass.course}
-                    onChange={(e) =>
-                      setNewClass({ ...newClass, course: e.target.value })
-                    }
-                  >
-                    {courses
-                      .filter((c) => c !== "All Courses")
-                      .map((course) => (
-                        <option key={course} value={course}>
-                          {course}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date & Time
-                  </label>
-                  <input
-                    type="datetime-local"
-                    className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={newClass.schedule}
-                    onChange={(e) =>
-                      setNewClass({ ...newClass, schedule: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Duration (minutes)
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={newClass.duration}
-                    onChange={(e) =>
-                      setNewClass({
-                        ...newClass,
-                        duration: parseInt(e.target.value) || 60,
-                      })
-                    }
-                    min="15"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreateClass}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  disabled={!newClass.title || !newClass.schedule}
-                >
-                  Schedule Class
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-     
-        {isInClass && (
-          <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col z-50">
-            <div className="flex-1 flex flex-col">
-            
-              <div className="flex-1 bg-gray-800 flex items-center justify-center relative">
-                <div className="text-white text-center">
-                  <div className="w-16 h-16 bg-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FiVideo size={24} />
-                  </div>
-                  <h3 className="text-xl font-medium">
-                    Live Class in Progress
-                  </h3>
-                  <p className="text-gray-400">
-                    Students will join automatically
-                  </p>
-                </div>
-
-                <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full flex items-center">
-                  <FiUsers className="mr-2" />
-                  <span>18 participants</span>
-                </div>
-
-                <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
-                  {classes.find((c) => c.status === "ongoing")?.title}
-                </div>
-              </div>
-
-      
-              <div className="bg-gray-800 p-4 flex justify-center space-x-6">
-                <button
-                  onClick={() => setIsMicOn(!isMicOn)}
-                  className={`p-3 rounded-full ${
-                    isMicOn ? "bg-gray-700 text-white" : "bg-red-500 text-white"
-                  }`}
-                >
-                  {isMicOn ? <FiMic size={20} /> : <FiMicOff size={20} />}
-                </button>
-
-                <button
-                  onClick={() => setIsCameraOn(!isCameraOn)}
-                  className={`p-3 rounded-full ${
-                    isCameraOn
-                      ? "bg-gray-700 text-white"
-                      : "bg-red-500 text-white"
-                  }`}
-                >
-                  {isCameraOn ? (
-                    <FiCamera size={20} />
-                  ) : (
-                    <FiCameraOff size={20} />
-                  )}
-                </button>
-
-                <button className="p-3 rounded-full bg-gray-700 text-white">
-                  <FiShare2 size={20} />
-                </button>
-
-                <button className="p-3 rounded-full bg-gray-700 text-white">
-                  <FiMessageSquare size={20} />
-                </button>
-
-                <button
-                  onClick={() =>
-                    endClass(
-                      classes.find((c) => c.status === "ongoing")?.id || ""
-                    )
-                  }
-                  className="p-3 rounded-full bg-red-600 text-white px-6"
-                >
-                  End Class
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200 mb-6">
-          <button
-            className={`px-4 py-2 font-medium ${
-              activeTab === "classes"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("classes")}
-          >
-            My Classes
-          </button>
-          <button
-            className={`px-4 py-2 font-medium ${
-              activeTab === "recordings"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("recordings")}
-          >
-            Recordings
-          </button>
-        </div>
-
         {activeTab === "classes" && (
           <>
-            {/* Filters */}
             <div className="bg-white rounded-lg shadow p-4 mb-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="relative md:col-span-2">
@@ -515,52 +301,12 @@ const LiveClassPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex justify-end space-x-3">
-                            {liveClass.status === "upcoming" && (
-                              <button
-                                onClick={() => startClass(liveClass.id)}
+                            <Link to={"/Video"}>
+                              <FiVideo
+                                size={18}
                                 className="text-green-600 hover:text-green-900"
-                                title="Start Class"
-                              >
-                                <FiVideo size={18} />
-                              </button>
-                            )}
-                            {liveClass.status === "ongoing" && (
-                              <button
-                                onClick={() => setIsInClass(true)}
-                                className="text-blue-600 hover:text-blue-900"
-                                title="Join Class"
-                              >
-                                <FiVideo size={18} />
-                              </button>
-                            )}
-                            {liveClass.status === "completed" &&
-                              liveClass.recordingUrl && (
-                                <a
-                                  href={liveClass.recordingUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-purple-600 hover:text-purple-900"
-                                  title="View Recording"
-                                >
-                                  <FiVideo size={18} />
-                                </a>
-                              )}
-                            <button
-                              onClick={() =>
-                                console.log(`Edit ${liveClass.id}`)
-                              }
-                              className="text-blue-600 hover:text-blue-900"
-                              title="Edit"
-                            >
-                              <FiEdit2 size={18} />
-                            </button>
-                            <button
-                              onClick={() => deleteClass(liveClass.id)}
-                              className="text-red-600 hover:text-red-900"
-                              title="Delete"
-                            >
-                              <FiTrash2 size={18} />
-                            </button>
+                              />
+                            </Link>
                           </div>
                         </td>
                       </tr>
@@ -579,52 +325,6 @@ const LiveClassPage = () => {
               </table>
             </div>
           </>
-        )}
-
-        {activeTab === "recordings" && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Class Recordings</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {classes
-                .filter((c) => c.recordingUrl)
-                .map((liveClass) => (
-                  <div
-                    key={liveClass.id}
-                    className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-                  >
-                    <div className="bg-gray-200 h-40 flex items-center justify-center relative">
-                      <FiVideo className="text-gray-400 text-4xl" />
-                      <div className="absolute bottom-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
-                        {liveClass.duration} min
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium mb-1">{liveClass.title}</h3>
-                      <p className="text-sm text-gray-500 mb-2">
-                        {liveClass.course}
-                      </p>
-                      <div className="flex justify-between text-xs text-gray-400">
-                        <span>{liveClass.schedule.toLocaleDateString()}</span>
-                        <span>{liveClass.participants} participants</span>
-                      </div>
-                      <div className="mt-4 flex justify-between">
-                        <a
-                          href={liveClass.recordingUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 text-sm"
-                        >
-                          Watch Recording
-                        </a>
-                        <button className="text-gray-500 hover:text-gray-700">
-                          <FiMoreVertical />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
         )}
       </div>
     </div>

@@ -16,6 +16,8 @@ import Assignments from "./pages/Assignments";
 import ResourceUpload from "./pages/ResourceUpload";
 import Notifications from "./pages/Notifications";
 import Class from "./pages/Class";
+import Video from "./pages/video/Class";
+import ProfilePage from "./pages/ProfilePage";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -152,6 +154,22 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute isLoggedIn={isLoggedIn}>
                   <Class />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Video"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <Video />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

@@ -11,6 +11,7 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import Header from "../components/Header";
+import { Link } from "react-router-dom";
 
 type Course = {
   id: string;
@@ -103,12 +104,6 @@ const OverviewPage: React.FC = () => {
     },
   ]);
 
-  const [notifications, setNotifications] = useState([
-    "New assignment posted in Algebra Fundamentals",
-    "Your submission for Lab Report has been graded",
-    "Upcoming live class: Chemistry Lab tomorrow at 2 PM",
-  ]);
-
   const joinClass = (classId: string) => {
     console.log(`Joining class ${classId}`);
   };
@@ -119,27 +114,6 @@ const OverviewPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Top Navigation */}
-      {/* <header className="bg-white shadow-sm p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">Dashboard</h1>
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button className="p-2 rounded-full hover:bg-gray-100 relative">
-            <FiBell className="text-gray-600" />
-            {notifications.length > 0 && (
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            )}
-          </button>
-          <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-        </div>
-      </header> */}
       <Header title="Dashboard" />
 
       <main className="p-6 flex-1 overflow-auto mt-[66px] ">
@@ -221,16 +195,12 @@ const OverviewPage: React.FC = () => {
                       )}
                     </p>
                   </div>
-                  <button
-                    onClick={() => joinClass(liveClass.id)}
-                    className={`px-4 py-2 rounded-lg ${
-                      liveClass.status === "ongoing"
-                        ? "bg-green-600 text-white hover:bg-green-700"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
-                    }`}
+                  <Link
+                    to={"/Video"}
+                    className={`px-4 py-2 rounded-lg ${"bg-green-600 text-white hover:bg-green-700"}`}
                   >
-                    {liveClass.status === "ongoing" ? "Join Now" : "Prepare"}
-                  </button>
+                    Join Now
+                  </Link>
                 </div>
               ))}
             </div>
