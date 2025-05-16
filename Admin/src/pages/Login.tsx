@@ -50,7 +50,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
         if (response.status === 200 && user) {
           // Store user data in localStorage
-          localStorage.setItem("isLoggedIn", "true");
+          // localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("user", JSON.stringify(user));
 
           if (user.role === "admin") {

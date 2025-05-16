@@ -2,10 +2,7 @@ import {
   FiSearch,
   FiChevronDown,
   FiCheck,
-  FiX,
-  FiFileText,
   FiDownload,
-  FiUpload,
   FiMessageSquare,
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
@@ -52,16 +49,13 @@ const GradeSubmissionPage = () => {
     ] as RubricItem[],
   };
 
- 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSubmission, setSelectedSubmission] =
     useState<Submission | null>(null);
   const [rubric, setRubric] = useState<RubricItem[]>(assignment.rubric);
-  const [overallFeedback, setOverallFeedback] = useState("");
   const [activeTab, setActiveTab] = useState("submissions");
 
   // Filter submissions
- 
 
   const handleRubricChange = (
     id: string,
@@ -77,22 +71,6 @@ const GradeSubmissionPage = () => {
 
   const calculateTotalGrade = () => {
     return rubric.reduce((total, item) => total + (item.earnedPoints || 0), 0);
-  };
-
-  const handleSubmitGrade = () => {
-    if (!selectedSubmission) return;
-
-    const totalGrade = calculateTotalGrade();
-    console.log(
-      `Graded submission ${selectedSubmission.id} with ${totalGrade}/${assignment.totalPoints}`
-    );
-    // In a real app, this would send to your backend
-    setSelectedSubmission({
-      ...selectedSubmission,
-      grade: totalGrade,
-      feedback: overallFeedback,
-      status: "graded",
-    });
   };
 
   // .....................
@@ -122,7 +100,6 @@ const GradeSubmissionPage = () => {
     // setUpdateOpen(false);
   };
   const [data, setData] = useState<any[]>([]);
-  const [total2, setTotal2] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -135,7 +112,6 @@ const GradeSubmissionPage = () => {
       if (response.ok) {
         const data = await response.json();
         setData(data.data);
-        setTotal2(data.data.length);
 
         console.log("Assignments fetched successfully:", data);
       } else {
@@ -150,7 +126,6 @@ const GradeSubmissionPage = () => {
     fetchData();
   }, []);
   const [data2, setData2] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
 
   const fetchData2 = async () => {
     try {
@@ -163,7 +138,6 @@ const GradeSubmissionPage = () => {
       if (response.ok) {
         const data = await response.json();
         setData2(data.data);
-        setTotal(data.data.length);
 
         console.log("Assignments fetched successfully:", data);
       } else {
@@ -228,7 +202,6 @@ const GradeSubmissionPage = () => {
     }
     // Reset selected submission and feedback
     setSelectedSubmission(null);
-    setOverallFeedback("");
     // Optionally, refresh the submission list or update the UI
     // fetchSubmissions();
     // or update the state with new data
@@ -241,27 +214,6 @@ const GradeSubmissionPage = () => {
     <div>
       <Header title="Grade Submission" />
       <div className="p-6 mt-20">
-        {/* Assignment Header */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold">{assignment.title}</h1>
-              <p className="text-gray-600">
-                {assignment.course} • Due:{" "}
-                {new Date(assignment.dueDate).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                {assignment.totalPoints} points
-              </span>
-              <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800">
-                <FiDownload /> Download All
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Tabs */}
         <div className="flex border-b border-gray-200 mb-6">
           <button
@@ -272,27 +224,7 @@ const GradeSubmissionPage = () => {
             }`}
             onClick={() => setActiveTab("submissions")}
           >
-            Submissions 
-          </button>
-          <button
-            className={`px-4 py-2 font-medium ${
-              activeTab === "rubric"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("rubric")}
-          >
-            Rubric
-          </button>
-          <button
-            className={`px-4 py-2 font-medium ${
-              activeTab === "grades"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("grades")}
-          >
-            Grades Overview
+            Submissions
           </button>
         </div>
 
@@ -387,27 +319,6 @@ const GradeSubmissionPage = () => {
                     </div>
                   </div>
 
-                  {/* Submission Files */}
-                  {/* <div className="mb-6">
-                    <h3 className="font-medium mb-2">Submitted Files</h3>
-                    <div className="space-y-2">
-                      {selectedSubmission.files.map((file, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                        >
-                          <div className="flex items-center">
-                            <FiFileText className="text-gray-500 mr-2" />
-                            <span>{file}</span>
-                          </div>
-                          <button className="text-blue-500 hover:text-blue-700">
-                            Download
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
-
                   <div className="mb-6">
                     <h3 className="font-medium mb-4">Rubric Assessment</h3>
                     <table className="min-w-full divide-y divide-gray-200">
@@ -438,19 +349,25 @@ const GradeSubmissionPage = () => {
                           <td className="px-4 py-3 whitespace-nowrap">
                             <input
                               type="number"
-                              min="0"
+                              min={0}
                               max={25}
                               className="w-20 p-1 border rounded"
-                              value={assignmentScore}
+                              value={
+                                assignmentScore === undefined
+                                  ? ""
+                                  : assignmentScore
+                              }
                               onChange={(e) => {
+                                let value = parseInt(e.target.value, 10);
+                                if (isNaN(value)) value = 0;
+                                if (value < 0) value = 0;
+                                if (value > 25) value = 25;
                                 handleRubricChange(
-                                  "RUB-1", // Replace with the actual rubric item's id
+                                  "RUB-1",
                                   "earnedPoints",
-                                  parseInt(e.target.value) || 0
+                                  value
                                 );
-                                setAssignmentScore(
-                                  parseInt(e.target.value) || 0
-                                );
+                                setAssignmentScore(value);
                               }}
                             />
                           </td>
@@ -459,14 +376,6 @@ const GradeSubmissionPage = () => {
                               type="text"
                               className="w-full p-1 border rounded"
                               placeholder="Add comments..."
-                              // value={item.comments || ""}
-                              // onChange={(e) =>
-                              //   handleRubricChange(
-                              //     item.id,
-                              //     "comments",
-                              //     e.target.value
-                              //   )
-                              // }
                             />
                           </td>
                         </tr>
@@ -480,17 +389,23 @@ const GradeSubmissionPage = () => {
                           <td className="px-4 py-3 whitespace-nowrap">
                             <input
                               type="number"
-                              min="0"
+                              min={0}
                               max={25}
                               className="w-20 p-1 border rounded"
-                              value={midExamScore}
+                              value={
+                                midExamScore === undefined ? "" : midExamScore
+                              }
                               onChange={(e) => {
+                                let value = parseInt(e.target.value, 10);
+                                if (isNaN(value)) value = 0;
+                                if (value < 0) value = 0;
+                                if (value > 25) value = 25;
                                 handleRubricChange(
-                                  "RUB-2", // Replace with the actual rubric item's id
+                                  "RUB-2",
                                   "earnedPoints",
-                                  parseInt(e.target.value) || 0
+                                  value
                                 );
-                                setMidExamScore(parseInt(e.target.value) || 0);
+                                setMidExamScore(value);
                               }}
                             />
                           </td>
@@ -499,14 +414,6 @@ const GradeSubmissionPage = () => {
                               type="text"
                               className="w-full p-1 border rounded"
                               placeholder="Add comments..."
-                              // value={item.comments || ""}
-                              // onChange={(e) =>
-                              //   handleRubricChange(
-                              //     item.id,
-                              //     "comments",
-                              //     e.target.value
-                              //   )
-                              // }
                             />
                           </td>
                         </tr>
@@ -521,19 +428,25 @@ const GradeSubmissionPage = () => {
                           <td className="px-4 py-3 whitespace-nowrap">
                             <input
                               type="number"
-                              min="0"
+                              min={0}
                               max={50}
                               className="w-20 p-1 border rounded"
-                              value={finalExamScore}
+                              value={
+                                finalExamScore === undefined
+                                  ? ""
+                                  : finalExamScore
+                              }
                               onChange={(e) => {
+                                let value = parseInt(e.target.value, 10);
+                                if (isNaN(value)) value = 0;
+                                if (value < 0) value = 0;
+                                if (value > 50) value = 50;
                                 handleRubricChange(
-                                  "RUB-3", // Replace with the actual rubric item's id
+                                  "RUB-3",
                                   "earnedPoints",
-                                  parseInt(e.target.value) || 0
+                                  value
                                 );
-                                setFinalExamScore(
-                                  parseInt(e.target.value) || 0
-                                );
+                                setFinalExamScore(value);
                               }}
                             />
                           </td>
@@ -542,14 +455,6 @@ const GradeSubmissionPage = () => {
                               type="text"
                               className="w-full p-1 border rounded"
                               placeholder="Add comments..."
-                              // value={item.comments || ""}
-                              // onChange={(e) =>
-                              //   handleRubricChange(
-                              //     item.id,
-                              //     "comments",
-                              //     e.target.value
-                              //   )
-                              // }
                             />
                           </td>
                         </tr>
@@ -607,56 +512,6 @@ const GradeSubmissionPage = () => {
                 </div>
               )}
             </div>
-          </div>
-        )}
-
-        {activeTab === "rubric" && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Assignment Rubric</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Criteria
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Max Points
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {assignment.rubric.map((item) => (
-                    <tr key={item.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {item.criteria}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.maxPoints}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">N/A</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-blue-600 hover:text-blue-900 mr-3">
-                          Edit
-                        </button>
-                        <button className="text-red-600 hover:text-red-900">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-              Add New Rubric Item
-            </button>
           </div>
         )}
 
@@ -748,35 +603,10 @@ const GradeSubmissionPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {submission.feedback}
                       </td>
-
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          className="text-blue-600 hover:text-blue-900"
-                          onClick={() => {
-                            setSelectedSubmission(submission);
-                            setActiveTab("submissions");
-                          }}
-                        >
-                          {submission.status === "graded" ? "View" : "Grade"}
-                        </button>
-                      </td> */}
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-            <div className="mt-4 flex justify-between items-center">
-              <div>
-                <span className="text-sm text-gray-700">
-                  Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">{submissions.length}</span> of{" "}
-                  <span className="font-medium">{submissions.length}</span>{" "}
-                  submissions
-                </span>
-              </div>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Publish All Grades
-              </button>
             </div>
           </div>
         )}
