@@ -316,3 +316,38 @@ exports.getAllStudents = async (req, res) => {
     });
   }
 };
+// Delete user by ID (admin only)
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  // Validate MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid user ID format" });
+  }
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      data: {
+        id: deletedUser._id,
+        username: deletedUser.username,
+        email: deletedUser.email,
+        role: deletedUser.role,
+      },
+    });
+  } catch (error) {
+    console.error("Delete user error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete user",
+      error: error.message,
+    });
+  }
+};

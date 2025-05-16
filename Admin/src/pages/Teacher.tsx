@@ -12,6 +12,7 @@ import {
 import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Header from "../components/Header";
+import ResponseModal from "../components/ResponseModal";
 const StudentEnrollmentPage = () => {
   const courses = ["All Courses", "Mathematics", "Science", "English"];
   const statuses = ["All Statuses", "active", "pending", "rejected"];
@@ -24,6 +25,34 @@ const StudentEnrollmentPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+   const [open, setOpen] = useState(false);
+   const [responseModal, setResponseModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    btnConfirm: false,
+    success: false,
+    btnLabel2: "",
+    btnLabel: "",
+    onClose: () => {},
+    onConfirm: () => {},
+  });
+  const handleResponseCloseModal = () => {
+    setResponseModal({
+      ...responseModal,
+      open: false,
+      btnConfirm: false,
+      title: "",
+      message: "",
+      success: false,
+      btnLabel: "",
+    });
+    setOpen(false);
+
+
+    // setRequestWithdrawOpen(false);
+    // setUpdateOpen(false);
+  };
 
   const handleRegister = async () => {
     setError("");
@@ -38,26 +67,47 @@ const StudentEnrollmentPage = () => {
     });
 
     if (response.ok) {
-      setSuccess("User registered successfully. You can now log in.");
+      fetchData();
+      setOpen(false)
+    
+      setResponseModal({
+        ...responseModal,
+        open: true,
+        title: "Success",
+        message: "Teacher created successfully",
+        btnConfirm: false,
+        success: true,
+        btnLabel2: "OK",
+        btnLabel: "",
+        onClose: handleResponseCloseModal,
+      });
+      setUsername("");
+      setEmail("");
+      setPassword("");
     } else {
-      const errorData = await response.text();
-      setError(errorData);
+      const errorData = await response.json();
+      setError(errorData.message);
+      setResponseModal({
+        ...responseModal,
+        open: true,
+        title: "Error",
+        message: errorData,
+        btnConfirm: false,
+        success: false,
+        btnLabel2: "OK",
+        btnLabel: "",
+        onClose: handleResponseCloseModal,
+      });
+      
     }
   };
 
-  const handleApprove = (id: string) => {
-    console.log(`Approved student ${id}`);
-  };
-
-  const handleReject = (id: string) => {
-    console.log(`Rejected student ${id}`);
-  };
   const [data, setData] = useState<any[]>([]);
   const [total2, setTotal2] = useState(0);
-  const [open, setOpen] = useState(false);
+ 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users/students", {
+      const response = await fetch("http://localhost:5000/api/users/teachers", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -65,7 +115,8 @@ const StudentEnrollmentPage = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setData(data.data);
+        setData(data.data.filter((item: any) => item.role === "teacher"));
+        // setData(data.data);
         setTotal2(data.data.length);
         console.log("Assignments fetched successfully:", data);
       } else {
@@ -79,6 +130,62 @@ const StudentEnrollmentPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+const [id, setID] = useState("");
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        }
+      );
+      if (response.ok) {
+        console.log("Teacher deleted successfully");
+        fetchData(); // Refresh the data after deletion
+        setResponseModal({
+          ...responseModal,
+          open: true,
+          title: "Success",
+          message: "Teacher deleted successfully",
+          btnConfirm: false,
+          success: true,
+          btnLabel2: "OK",
+          btnLabel: "",
+          onClose: handleResponseCloseModal,
+        });
+      } else {
+        console.error("Failed to delete student");
+        setResponseModal({
+          ...responseModal,
+          open: true,
+          title: "Error",
+          message: "Failed to delete Teacher",
+          btnConfirm: false,
+          success: false,
+          btnLabel2: "OK",
+          btnLabel: "",
+          onClose: handleResponseCloseModal,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      setResponseModal({
+        ...responseModal,
+        open: true,
+        title: "Error",
+        message: "Error deleting Teacher",
+        btnConfirm: false,
+        success: false,
+        btnLabel2: "OK",
+        btnLabel: "",
+        onClose: handleResponseCloseModal,
+      });
+    }
+  };
+
   return (
     <div>
       <Header title="Student Enrollment" />
@@ -99,51 +206,6 @@ const StudentEnrollmentPage = () => {
             </button> */}
           </div>
         </div>
-
-        {/* <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative md:col-span-2">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search students..."
-                className="w-full pl-10 pr-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            <div className="relative">
-              <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <select
-                className="w-full pl-10 pr-4 py-2 border rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-              >
-                {courses.map((course) => (
-                  <option key={course} value={course}>
-                    {course}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="relative">
-              <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <select
-                className="w-full pl-10 pr-4 py-2 border rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                {statuses.map((status) => (
-                  <option key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div> */}
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
@@ -203,7 +265,24 @@ const StudentEnrollmentPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                          <button className="text-red-600 hover:text-red-900">
+                          <button
+                            onClick={() =>{
+                              console.log(student._id);
+                              setID(student._id);
+                              setResponseModal({
+                                ...responseModal,
+                                open: true,
+                                title: "Delete Teacher",
+                                message: "Are you sure you want to delete this Teacher?",
+                                btnConfirm: true,
+                                success: false,
+                                btnLabel2: "Delete",
+                                btnLabel: "Cancel",
+                                onClose: handleResponseCloseModal,
+                                onConfirm: handleDelete,
+                              });
+                              }}
+                           className="text-red-600 hover:text-red-900">
                             Delete
                           </button>
                         </div>
@@ -225,49 +304,6 @@ const StudentEnrollmentPage = () => {
           </div>
         </div>
 
-        {/* <div className="flex items-center justify-between mt-4 px-4 py-3 bg-white border-t border-gray-200 rounded-b-lg">
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">1</span> to{" "}
-                
-                results
-              </p>
-            </div>
-            <div>
-              <nav
-                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                aria-label="Pagination"
-              >
-                <a
-                  href="#"
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Previous
-                </a>
-                <a
-                  href="#"
-                  aria-current="page"
-                  className="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  className="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Next
-                </a>
-              </nav>
-            </div>
-          </div>
-        </div> */}
       </div>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -278,72 +314,88 @@ const StudentEnrollmentPage = () => {
                 <CloseIcon />
               </button>
             </div>
-            <form onSubmit={handleRegister}>
+            <form
+              onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+              }}
+            >
               <div className="mb-4">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  // value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Your username"
-                  required
-                />
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                // value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Your username"
+                required
+              />
               </div>
 
               <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  // value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="you@example.com"
-                  required
-                />
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                // value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="you@example.com"
+                required
+              />
               </div>
               <div className="mb-4">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  // value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Your password"
-                  required
-                />
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                // value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Your password"
+                required
+              />
               </div>
 
               <div>
-                <button
-                  type="submit"
-                  className="w-full bg-[#00A16A] text-white font-semibold py-2 rounded-md "
-                >
-                  Submit Assignment
-                </button>
+              <button
+                type="submit"
+                className="w-full bg-[#00A16A] text-white font-semibold py-2 rounded-md "
+              >
+                Create Teacher
+              </button>
               </div>
             </form>
           </div>
         </div>
       </Modal>
+       <ResponseModal
+              onClose={handleResponseCloseModal}
+              onConfirm={responseModal.onConfirm}
+              open={responseModal.open}
+              message={responseModal.message}
+              title={responseModal.title}
+              btnLabel2={responseModal.btnLabel2}
+              btnConfirm={responseModal.btnConfirm}
+              btnLabel={responseModal.btnLabel}
+              success={responseModal.success}
+            />
     </div>
   );
 };

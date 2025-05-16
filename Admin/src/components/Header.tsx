@@ -11,7 +11,6 @@ import {
   Divider,
   Chip,
 } from "@mui/material";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -221,7 +220,7 @@ const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           </Box>
           <Divider sx={{ my: 0.5 }} />
 
-          <MenuItem
+          {/* <MenuItem
             component={Link}
             to="/profile"
             onClick={handleMenuClose}
@@ -233,7 +232,7 @@ const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
               </Avatar>
             </ListItemIcon>
             My Profile
-          </MenuItem>
+          </MenuItem> */}
 
           {/* <MenuItem
             component={Link}
