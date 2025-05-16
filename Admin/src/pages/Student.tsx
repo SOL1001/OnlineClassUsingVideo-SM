@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import {
-  FiSearch,
+  // FiSearch,
   FiUserPlus,
-  FiDownload,
-  FiFilter,
+  // FiDownload,
+  // FiFilter,
   FiUserCheck,
   FiUserX,
   FiMail,
   FiPrinter,
 } from "react-icons/fi";
-import Header from "../components/Header";
 import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import Header from "../components/Header";
 const StudentEnrollmentPage = () => {
   const courses = ["All Courses", "Mathematics", "Science", "English"];
   const statuses = ["All Statuses", "active", "pending", "rejected"];
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState(courses[0]);
-  const [selectedStatus, setSelectedStatus] = useState(statuses[0]);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [selectedCourse, setSelectedCourse] = useState(courses[0]);
+  // const [selectedStatus, setSelectedStatus] = useState(statuses[0]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +38,7 @@ const StudentEnrollmentPage = () => {
     });
 
     if (response.ok) {
-      setSuccess("User registered successfully. You can now log in.");
+      fetchData();
     } else {
       const errorData = await response.text();
       setError(errorData);
@@ -88,7 +88,7 @@ const StudentEnrollmentPage = () => {
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <button
               onClick={() => setOpen(true)}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              className="flex items-center justify-center gap-2 bg-[#00A16A] text-white px-4 py-2 rounded  transition-colors"
             >
               <FiUserPlus />
               Add New Student
@@ -203,35 +203,8 @@ const StudentEnrollmentPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                          {student.status === "pending" && (
-                            <>
-                              <button
-                                onClick={() => handleApprove(student.id)}
-                                className="text-green-600 hover:text-green-900"
-                                title="Approve"
-                              >
-                                <FiUserCheck size={18} />
-                              </button>
-                              <button
-                                onClick={() => handleReject(student.id)}
-                                className="text-red-600 hover:text-red-900"
-                                title="Reject"
-                              >
-                                <FiUserX size={18} />
-                              </button>
-                            </>
-                          )}
-                          <button
-                            className="text-blue-600 hover:text-blue-900"
-                            title="Send Email"
-                          >
-                            <FiMail size={18} />
-                          </button>
-                          <button
-                            className="text-gray-600 hover:text-gray-900"
-                            title="Print Details"
-                          >
-                            <FiPrinter size={18} />
+                          <button className="text-red-600 hover:text-red-900">
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -299,13 +272,22 @@ const StudentEnrollmentPage = () => {
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative">
-            <button
-              className="absolute top-2 right-2 text-gray-600"
-              onClick={() => setOpen(false)}
-            >
-              <CloseIcon />
-            </button>
-            Create Assignment
+            <div className="flex items-center justify-between mb-4">
+              <h1>Create Student account</h1>
+              <button className=" text-gray-600" onClick={() => setOpen(false)}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div>
+              {error && (
+                <div
+                  className="mb-6 p-3 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-center border border-red-200 dark:border-red-800"
+                  role="alert"
+                >
+                  {error}
+                </div>
+              )}
+            </div>
             <form onSubmit={handleRegister}>
               <div className="mb-4">
                 <label
@@ -363,7 +345,7 @@ const StudentEnrollmentPage = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700"
+                  className="w-full bg-[#00A16A] text-white font-semibold py-2 rounded-md "
                 >
                   Submit Assignment
                 </button>

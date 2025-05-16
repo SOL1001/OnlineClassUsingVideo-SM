@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Agent";
+import Dashboard from "./pages/Teacher";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PropertyDetails from "./pages/Property/PropertyDetails";
+// import PropertyDetails from "./pages/Property/PropertyDetails";
 import ProfilePage from "./pages/ProfilePage";
-import Customer from "./pages/Customer/Customer";
+import Customer from "./pages/Student";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -98,14 +98,14 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/PropertyDetails"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <PropertyDetails />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/Customer"
             element={

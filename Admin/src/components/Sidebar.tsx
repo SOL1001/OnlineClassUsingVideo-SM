@@ -24,10 +24,10 @@ const Sidebar: React.FC<{
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems: NavItem[] = [
-    { path: "/dashboard", label: "Agent Dashboard", icon: <DashboardIcon /> },
+    { path: "/dashboard", label: "Teacher", icon: <DashboardIcon /> },
     // { path: "/PropertyDetails", label: "Properties", icon: <HomeIcon /> },
 
-    { path: "/Customer", label: "Clients", icon: <PeopleIcon /> },
+    { path: "/Customer", label: "Student", icon: <PeopleIcon /> },
   ];
   // Prevent collapsing on mobile
   const handleCollapseToggle = () => {
@@ -112,8 +112,8 @@ const Sidebar: React.FC<{
                     <span className="text-[#00A16A] font-bold text-xl">RE</span>
                   </div>
                   <div className="flex flex-col">
-                    <h1 className="text-lg font-bold">ELITE HOMES</h1>
-                    <p className="text-xs opacity-80">Premium Real Estate</p>
+                    <h1 className="text-lg font-bold">Admin</h1>
+                    <p className="text-xs opacity-80">RADA COLLAGE</p>
                   </div>
                 </div>
               )}
@@ -187,7 +187,7 @@ const Sidebar: React.FC<{
               </button>
               {!collapsed && window.innerWidth >= 768 && (
                 <p className="text-xs text-white/60 mt-2 text-center">
-                  © {new Date().getFullYear()} Elite Homes
+                  © {new Date().getFullYear()} RADA COLLAGE
                 </p>
               )}
             </div>

@@ -7,7 +7,7 @@ import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 interface UserData {
   id: string;
   email: string;
-  username: string;
+  email: string;
   avatar: string | null;
   role: string;
   createdAt: string;
@@ -19,41 +19,46 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Memoized submit handler
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setError("");
       setIsLoading(true);
 
-      const { username, password } = formData;
+      const { email, password } = formData;
 
-      if (!username.trim() || !password) {
+      if (!email.trim() || !password) {
         setError("Please fill in all fields.");
         setIsLoading(false);
         return;
       }
 
       try {
-        const response = await apiRequest.post<UserData>("/auth/login", {
-          username,
-          password,
+        const response = await fetch("http://localhost:5000/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
         });
-
-        const user = response.data;
+        const user = await response.json();
 
         if (response.status === 200 && user) {
           // Store user data in localStorage
           // localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("user", JSON.stringify(user));
 
-          if (user.role === "admin") {
+          if (user.data.user.role === "admin") {
+            // Store token and user data in localStorage
+            localStorage.setItem("token", user.data.token);
             onLogin(user);
             navigate("/dashboard", { replace: true });
           } else {
@@ -102,27 +107,27 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div className="space-y-1">
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-300"
             >
-              Username
+              email
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaUser className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </div>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
                 onChange={handleInputChange}
                 className="pl-10 w-full px-4 py-3 border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-700 text-white placeholder-gray-400"
-                placeholder="Enter your username"
-                autoComplete="username"
+                placeholder="Enter your email"
+                autoComplete="email"
                 required
                 aria-invalid={!!error}
-                aria-describedby={error ? "username-error" : undefined}
+                aria-describedby={error ? "email-error" : undefined}
               />
             </div>
           </div>
