@@ -444,10 +444,7 @@ const AssignmentPage = () => {
                   <FiPlus />
                   New Assignment
                 </button>
-                <button className="flex items-center justify-center gap-2 border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 transition-colors">
-                  <FiDownload />
-                  Export
-                </button>
+               
               </div>
             </div>
 

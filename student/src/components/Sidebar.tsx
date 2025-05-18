@@ -8,6 +8,7 @@ import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 // import SchoolIcon from "@mui/icons-material/School";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
 import logo from "../assets/logo.png";
+import Header from "./Header";
 interface NavItem {
   path: string;
   label: string;
@@ -45,11 +46,11 @@ const Sidebar: React.FC<{
       label: "Assignments",
       icon: <AssignmentIcon />,
     },
-    // {
-    //   path: "/EnrollmentStatus",
-    //   label: "Enrollment Status",
-    //   icon: <GradingIcon />,
-    // },
+    {
+      path: "/EnrollmentStatus",
+      label: "Grade Viwe",
+      icon: <GradingIcon />,
+    },
   ];
 
   return (

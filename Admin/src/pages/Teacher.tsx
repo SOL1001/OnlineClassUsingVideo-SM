@@ -4,29 +4,23 @@ import {
   FiUserPlus,
   // FiDownload,
   // FiFilter,
-  FiUserCheck,
-  FiUserX,
-  FiMail,
-  FiPrinter,
+  // FiUserCheck,
+  // FiUserX,
+  // FiMail,
+  // FiPrinter,
 } from "react-icons/fi";
 import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Header from "../components/Header";
 import ResponseModal from "../components/ResponseModal";
 const StudentEnrollmentPage = () => {
-  const courses = ["All Courses", "Mathematics", "Science", "English"];
-  const statuses = ["All Statuses", "active", "pending", "rejected"];
-
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [selectedCourse, setSelectedCourse] = useState(courses[0]);
-  // const [selectedStatus, setSelectedStatus] = useState(statuses[0]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-   const [open, setOpen] = useState(false);
-   const [responseModal, setResponseModal] = useState({
+  const [open, setOpen] = useState(false);
+  const [responseModal, setResponseModal] = useState({
     open: false,
     title: "",
     message: "",
@@ -49,7 +43,6 @@ const StudentEnrollmentPage = () => {
     });
     setOpen(false);
 
-
     // setRequestWithdrawOpen(false);
     // setUpdateOpen(false);
   };
@@ -68,8 +61,8 @@ const StudentEnrollmentPage = () => {
 
     if (response.ok) {
       fetchData();
-      setOpen(false)
-    
+      setOpen(false);
+
       setResponseModal({
         ...responseModal,
         open: true,
@@ -98,13 +91,12 @@ const StudentEnrollmentPage = () => {
         btnLabel: "",
         onClose: handleResponseCloseModal,
       });
-      
     }
   };
 
   const [data, setData] = useState<any[]>([]);
   const [total2, setTotal2] = useState(0);
- 
+
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/users/teachers", {
@@ -130,18 +122,15 @@ const StudentEnrollmentPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-const [id, setID] = useState("");
+  const [id, setID] = useState("");
   const handleDelete = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
       if (response.ok) {
         console.log("Teacher deleted successfully");
         fetchData(); // Refresh the data after deletion
@@ -237,7 +226,7 @@ const [id, setID] = useState("");
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <span className="text-blue-600 font-medium">
-                              {student.avatar}
+                              {/* {student.avatar} */}
                             </span>
                           </div>
                           <div className="ml-4">
@@ -266,14 +255,15 @@ const [id, setID] = useState("");
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
                           <button
-                            onClick={() =>{
+                            onClick={() => {
                               console.log(student._id);
                               setID(student._id);
                               setResponseModal({
                                 ...responseModal,
                                 open: true,
                                 title: "Delete Teacher",
-                                message: "Are you sure you want to delete this Teacher?",
+                                message:
+                                  "Are you sure you want to delete this Teacher?",
                                 btnConfirm: true,
                                 success: false,
                                 btnLabel2: "Delete",
@@ -281,8 +271,9 @@ const [id, setID] = useState("");
                                 onClose: handleResponseCloseModal,
                                 onConfirm: handleDelete,
                               });
-                              }}
-                           className="text-red-600 hover:text-red-900">
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
                             Delete
                           </button>
                         </div>
@@ -303,7 +294,6 @@ const [id, setID] = useState("");
             </table>
           </div>
         </div>
-
       </div>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -316,86 +306,86 @@ const [id, setID] = useState("");
             </div>
             <form
               onSubmit={(e) => {
-              e.preventDefault();
-              handleRegister();
+                e.preventDefault();
+                handleRegister();
               }}
             >
               <div className="mb-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                // value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Your username"
-                required
-              />
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  // value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your username"
+                  required
+                />
               </div>
 
               <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                // value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="you@example.com"
-                required
-              />
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  // value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="you@example.com"
+                  required
+                />
               </div>
               <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                // value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Your password"
-                required
-              />
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  // value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your password"
+                  required
+                />
               </div>
 
               <div>
-              <button
-                type="submit"
-                className="w-full bg-[#00A16A] text-white font-semibold py-2 rounded-md "
-              >
-                Create Teacher
-              </button>
+                <button
+                  type="submit"
+                  className="w-full bg-[#00A16A] text-white font-semibold py-2 rounded-md "
+                >
+                  Create Teacher
+                </button>
               </div>
             </form>
           </div>
         </div>
       </Modal>
-       <ResponseModal
-              onClose={handleResponseCloseModal}
-              onConfirm={responseModal.onConfirm}
-              open={responseModal.open}
-              message={responseModal.message}
-              title={responseModal.title}
-              btnLabel2={responseModal.btnLabel2}
-              btnConfirm={responseModal.btnConfirm}
-              btnLabel={responseModal.btnLabel}
-              success={responseModal.success}
-            />
+      <ResponseModal
+        onClose={handleResponseCloseModal}
+        onConfirm={responseModal.onConfirm}
+        open={responseModal.open}
+        message={responseModal.message}
+        title={responseModal.title}
+        btnLabel2={responseModal.btnLabel2}
+        btnConfirm={responseModal.btnConfirm}
+        btnLabel={responseModal.btnLabel}
+        success={responseModal.success}
+      />
     </div>
   );
 };

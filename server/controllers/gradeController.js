@@ -9,22 +9,32 @@ exports.submitGrade = async (req, res) => {
     }
 
     const studentId = req.query.studentId;
-    const { assignmentScore, midExamScore, finalExamScore, feedback } =
-      req.body;
+    const { subject, assignmentScore, midExamScore, finalExamScore, feedback } = req.body;
 
     if (!studentId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "studentId is required in query" });
+      return res.status(400).json({ success: false, message: "studentId is required in query" });
     }
 
     if (assignmentScore > 25 || midExamScore > 25 || finalExamScore > 50) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Score exceeds maximum limits" });
+      return res.status(400).json({ success: false, message: "Score exceeds maximum limits" });
+    }
+
+    // Optional: Prevent duplicate submission from the same teacher for the same subject
+    const existing = await Grade.findOne({
+      student: studentId,
+      teacher: req.user._id,
+      subject: subject,
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: "You already submitted a grade for this student and subject.",
+      });
     }
 
     const grade = await Grade.create({
+      subject,
       student: studentId,
       teacher: req.user._id,
       assignmentScore,
@@ -33,17 +43,17 @@ exports.submitGrade = async (req, res) => {
       feedback,
     });
 
-    res
-      .status(201)
-      .json({ success: true, message: "Grade submitted", data: grade });
+    res.status(201).json({
+      success: true,
+      message: "Grade submitted successfully",
+      data: grade,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error submitting grade",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error submitting grade",
+      error: error.message,
+    });
   }
 };
 

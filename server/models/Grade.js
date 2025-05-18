@@ -12,6 +12,10 @@ const gradeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    subject: {
+      type: String,
+      default: "",
+    },
     assignmentScore: {
       type: Number,
       required: true,
@@ -36,5 +40,8 @@ const gradeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Prevent duplicate grades per teacher-student-subject
+// gradeSchema.index({ student: 1, subject: 1, teacher: 1 }, { unique: true });
 
 module.exports = mongoose.model("Grade", gradeSchema);

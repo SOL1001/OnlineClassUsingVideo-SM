@@ -9,20 +9,20 @@ import {
   FiSearch,
   FiFolderPlus,
 } from "react-icons/fi";
-import { Modal, Button, TextField } from "@mui/material";
-import { useState, useRef, ChangeEvent, useEffect } from "react";
+import { Modal, Button } from "@mui/material";
+import { useState, useRef, useEffect } from "react";
 import Header from "../components/Header";
 import ResponseModal from "../components/ResponseModal";
 
-type Resource = {
-  id: string;
-  name: string;
-  type: "pdf" | "video" | "image" | "audio" | "document" | "other";
-  size: string;
-  uploadedAt: string;
-  course: string;
-  downloads: number;
-};
+// type Resource = {
+//   id: string;
+//   name: string;
+//   type: "pdf" | "video" | "image" | "audio" | "document" | "other";
+//   size: string;
+//   uploadedAt: string;
+//   course: string;
+//   downloads: number;
+// };
 // ;;;;;;/
 interface FileDetails {
   filename: string;
@@ -32,35 +32,35 @@ interface FileDetails {
   path: string;
 }
 const ResourceUploadPage: React.FC = () => {
-  const [resources, setResources] = useState<any[]>([
-    {
-      id: "RES-001",
-      name: "Algebra_Chapter_1.pdf",
-      type: "pdf",
-      size: "2.4 MB",
-      uploadedAt: "2023-06-15T10:30:00",
-      course: "Mathematics",
-      downloads: 24,
-    },
-    {
-      id: "RES-002",
-      name: "Chemical_Reactions.mp4",
-      type: "video",
-      size: "45.2 MB",
-      uploadedAt: "2023-06-10T14:15:00",
-      course: "Science",
-      downloads: 18,
-    },
-    {
-      id: "RES-003",
-      name: "Shakespeare_Notes.docx",
-      type: "document",
-      size: "1.1 MB",
-      uploadedAt: "2023-06-05T09:45:00",
-      course: "English",
-      downloads: 32,
-    },
-  ]);
+  // const [resources, setResources] = useState<any[]>([
+  //   {
+  //     id: "RES-001",
+  //     name: "Algebra_Chapter_1.pdf",
+  //     type: "pdf",
+  //     size: "2.4 MB",
+  //     uploadedAt: "2023-06-15T10:30:00",
+  //     course: "Mathematics",
+  //     downloads: 24,
+  //   },
+  //   {
+  //     id: "RES-002",
+  //     name: "Chemical_Reactions.mp4",
+  //     type: "video",
+  //     size: "45.2 MB",
+  //     uploadedAt: "2023-06-10T14:15:00",
+  //     course: "Science",
+  //     downloads: 18,
+  //   },
+  //   {
+  //     id: "RES-003",
+  //     name: "Shakespeare_Notes.docx",
+  //     type: "document",
+  //     size: "1.1 MB",
+  //     uploadedAt: "2023-06-05T09:45:00",
+  //     course: "English",
+  //     downloads: 32,
+  //   },
+  // ]);
 
   const courses = [
     "All Courses",
@@ -82,22 +82,22 @@ const ResourceUploadPage: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState(courses[0]);
   const [selectedType, setSelectedType] = useState(resourceTypes[0]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
+  // const [isUploading, setIsUploading] = useState(false);
+  // const [uploadProgress, setUploadProgress] = useState(0);
+  // const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredResources = resources.filter((resource) => {
-    const matchesSearch = resource.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCourse =
-      selectedCourse === "All Courses" || resource.course === selectedCourse;
-    const matchesType =
-      selectedType === "All Types" || resource.type === selectedType;
+  // const filteredResources = resources.filter((resource) => {
+  //   const matchesSearch = resource.name
+  //     .toLowerCase()
+  //     .includes(searchTerm.toLowerCase());
+  //   const matchesCourse =
+  //     selectedCourse === "All Courses" || resource.course === selectedCourse;
+  //   const matchesType =
+  //     selectedType === "All Types" || resource.type === selectedType;
 
-    return matchesSearch && matchesCourse && matchesType;
-  });
+  //   return matchesSearch && matchesCourse && matchesType;
+  // });
 
   const getFileIcon = (type: string) => {
     switch (type) {
@@ -116,58 +116,55 @@ const ResourceUploadPage: React.FC = () => {
     }
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  // const triggerFileInput = () => {
+  //   fileInputRef.current?.click();
+  // };
 
-  const simulateUpload = () => {
-    setIsUploading(true);
-    setUploadProgress(0);
+  // const simulateUpload = () => {
+  //   setIsUploading(true);
+  //   setUploadProgress(0);
 
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
+  //   const interval = setInterval(() => {
+  //     setUploadProgress((prev) => {
+  //       if (prev >= 100) {
+  //         clearInterval(interval);
+  //         setIsUploading(false);
 
-          const newResources = filesToUpload.map((file) => ({
-            id: `RES-${Math.floor(Math.random() * 10000)}`,
-            name: file.name,
-            type: getFileType(file.type),
-            size: formatFileSize(file.size),
-            uploadedAt: new Date().toISOString(),
-            course: "Mathematics",
-            downloads: 0,
-          }));
+  //         const newResources = filesToUpload.map((file) => ({
+  //           id: `RES-${Math.floor(Math.random() * 10000)}`,
+  //           name: file.name,
+  //           type: getFileType(file.type),
+  //           size: formatFileSize(file.size),
+  //           uploadedAt: new Date().toISOString(),
+  //           course: "Mathematics",
+  //           downloads: 0,
+  //         }));
 
-          setResources([...newResources, ...resources]);
-          setFilesToUpload([]);
-          return 0;
-        }
-        return prev + 10;
-      });
-    }, 300);
-  };
+  //         setResources([...newResources, ...resources]);
+  //         setFilesToUpload([]);
+  //         return 0;
+  //       }
+  //       return prev + 10;
+  //     });
+  //   }, 300);
+  // };
 
-  const getFileType = (mimeType: string): Resource["type"] => {
-    if (mimeType.includes("pdf")) return "pdf";
-    if (mimeType.includes("video")) return "video";
-    if (mimeType.includes("image")) return "image";
-    if (mimeType.includes("audio")) return "audio";
-    if (mimeType.includes("word") || mimeType.includes("document"))
-      return "document";
-    return "other";
-  };
+  // const getFileType = (mimeType: string): Resource["type"] => {
+  //   if (mimeType.includes("pdf")) return "pdf";
+  //   if (mimeType.includes("video")) return "video";
+  //   if (mimeType.includes("image")) return "image";
+  //   if (mimeType.includes("audio")) return "audio";
+  //   if (mimeType.includes("word") || mimeType.includes("document"))
+  //     return "document";
+  //   return "other";
+  // };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
+  // const formatFileSize = (bytes: number) => {
+  //   if (bytes < 1024) return `${bytes} B`;
+  //   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  //   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  // };
 
-  const deleteResource = (id: string) => {
-    setResources(resources.filter((resource) => resource.id !== id));
-  };
   // ..........................................
   const [responseModal, setResponseModal] = useState({
     open: false,
@@ -360,8 +357,12 @@ const ResourceUploadPage: React.FC = () => {
   };
   return (
     <div>
-      <Header title={"Resource Upload"} />
-      <div className="p-6">
+      <div>
+        {" "}
+        <Header title={"Resource Upload"} />
+      </div>
+
+      <div className="p-6 mt-20">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold">Teaching Resources</h1>
@@ -384,13 +385,13 @@ const ResourceUploadPage: React.FC = () => {
           />
         </div>
 
-        {filesToUpload.length > 0 && (
+        {/* {filesToUpload.length > 0 && (
           <div className="bg-white rounded-lg shadow p-6 mb-6 border-2 border-dashed border-blue-200">
             <h2 className="text-lg font-medium mb-4">
               Files to Upload ({filesToUpload.length})
             </h2>
 
-            {/* <div className="space-y-3 mb-4">
+            <div className="space-y-3 mb-4">
               {filesToUpload.map((file, index) => (
                 <div
                   key={index}
@@ -405,8 +406,8 @@ const ResourceUploadPage: React.FC = () => {
                   </span>
                 </div>
               ))}
-            </div> */}
-            {/* 
+            </div>
+            
             {isUploading ? (
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div
@@ -429,9 +430,9 @@ const ResourceUploadPage: React.FC = () => {
                   <FiUpload /> Start Upload
                 </button>
               </div>
-            )} */}
+            )}
           </div>
-        )}
+        )} */}
 
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

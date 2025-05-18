@@ -7,12 +7,12 @@ import {
   Tooltip,
   Box,
   Typography,
-  Badge,
+  // Badge,
   Divider,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Settings from "@mui/icons-material/Settings";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -48,8 +48,33 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
 const Header: React.FC<{ title: React.ReactNode }> = ({ title }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<UserData | null>(null);
-  const [notificationsCount] = useState(0); // You can fetch real notifications count
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // const [notificationsCount] = useState(0);
   const open = Boolean(anchorEl);
+
+  const fetchAvatar = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch(
+        "http://localhost:5000/api/users/get/avatar",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setAvatarUrl(url);
+      }
+    } catch (error) {
+      console.error("Error fetching avatar:", error);
+    }
+  };
 
   useEffect(() => {
     const userData = localStorage.getItem("userData");
@@ -57,10 +82,17 @@ const Header: React.FC<{ title: React.ReactNode }> = ({ title }) => {
       try {
         const parsedUser = JSON.parse(userData);
         setUser(parsedUser);
+        fetchAvatar();
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
     }
+
+    return () => {
+      if (avatarUrl) {
+        URL.revokeObjectURL(avatarUrl);
+      }
+    };
   }, []);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -126,27 +158,6 @@ const Header: React.FC<{ title: React.ReactNode }> = ({ title }) => {
       </div>
 
       <div className="flex items-center gap-2 mr-4">
-        <Tooltip title="Notifications">
-          <IconButton
-            color="inherit"
-            aria-label="notifications"
-            sx={{
-              color: "text.secondary",
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-          >
-            <Badge
-              badgeContent={notificationsCount}
-              color="error"
-              overlap="circular"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Tooltip title="Account menu">
             <IconButton
@@ -167,11 +178,25 @@ const Header: React.FC<{ title: React.ReactNode }> = ({ title }) => {
                 sx={{
                   width: 36,
                   height: 36,
-                  bgcolor: "primary.main",
+                  bgcolor: avatarUrl ? "transparent" : "primary.main",
                   color: "primary.contrastText",
                 }}
               >
-                {getInitials()}
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="User Avatar"
+                    onError={() => setAvatarUrl(null)}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  getInitials()
+                )}
               </Avatar>
             </IconButton>
           </Tooltip>
@@ -210,21 +235,25 @@ const Header: React.FC<{ title: React.ReactNode }> = ({ title }) => {
             sx={{ borderRadius: "8px", my: 0.5 }}
           >
             <ListItemIcon>
-              <Avatar sx={{ width: 24, height: 24 }}>{getInitials()}</Avatar>
+              <Avatar sx={{ width: 24, height: 24 }}>
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="User"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                    onError={() => setAvatarUrl(null)}
+                  />
+                ) : (
+                  getInitials()
+                )}
+              </Avatar>
             </ListItemIcon>
             My Profile
-          </MenuItem>
-
-          <MenuItem
-            component={Link}
-            to="/settings"
-            onClick={handleMenuClose}
-            sx={{ borderRadius: "8px", my: 0.5 }}
-          >
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Settings
           </MenuItem>
 
           <Divider sx={{ my: 1 }} />

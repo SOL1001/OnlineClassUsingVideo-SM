@@ -155,6 +155,7 @@ const GradeSubmissionPage = () => {
   const [midExamScore, setMidExamScore] = useState<number | undefined>();
   const [finalExamScore, setFinalExamScore] = useState<number | undefined>();
   const [feedback, setFeedback] = useState("");
+  const [subject,setSubject] = useState("")
   // const [id, setId] = useState("");
   const handleGrade = async (id: any) => {
     // Mock API call to submit the grade
@@ -167,6 +168,7 @@ const GradeSubmissionPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          subject:subject,
           assignmentScore: assignmentScore,
           midExamScore: midExamScore,
           finalExamScore: finalExamScore,
@@ -320,7 +322,11 @@ const GradeSubmissionPage = () => {
                   </div>
 
                   <div className="mb-6">
-                    <h3 className="font-medium mb-4">Rubric Assessment</h3>
+                    <div  className="flex gap-10 mb-4"> 
+                      <h3 className="font-medium mb-4">Course Name</h3>
+                      <input type="text" placeholder="c++" onChange={(e)=>{setSubject(e.target.value)}}  className="border border-gray-400 rounded px-5 "/>
+                    </div>
+                    
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>

@@ -25,7 +25,7 @@ const StudentEnrollmentPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-   const [responseModal, setResponseModal] = useState({
+  const [responseModal, setResponseModal] = useState({
     open: false,
     title: "",
     message: "",
@@ -65,7 +65,7 @@ const StudentEnrollmentPage = () => {
 
     if (response.ok) {
       fetchData();
-       setResponseModal({
+      setResponseModal({
         ...responseModal,
         open: true,
         title: "Success",
@@ -79,7 +79,7 @@ const StudentEnrollmentPage = () => {
     } else {
       const errorData = await response.text();
       setError(errorData);
-        setResponseModal({
+      setResponseModal({
         ...responseModal,
         open: true,
         title: "Error",
@@ -92,7 +92,6 @@ const StudentEnrollmentPage = () => {
       });
     }
   };
-
 
   const [data, setData] = useState<any[]>([]);
   const [total2, setTotal2] = useState(0);
@@ -121,54 +120,37 @@ const StudentEnrollmentPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const [id, setID] = useState("");
-    const handleDelete = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/delete/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-            },
-          }
-        );
-        if (response.ok) {
-          console.log("Teacher deleted successfully");
-          fetchData(); // Refresh the data after deletion
-          setResponseModal({
-            ...responseModal,
-            open: true,
-            title: "Success",
-            message: "Teacher deleted successfully",
-            btnConfirm: false,
-            success: true,
-            btnLabel2: "OK",
-            btnLabel: "",
-            onClose: handleResponseCloseModal,
-          });
-        } else {
-          console.error("Failed to delete student");
-          setResponseModal({
-            ...responseModal,
-            open: true,
-            title: "Error",
-            message: "Failed to delete Teacher",
-            btnConfirm: false,
-            success: false,
-            btnLabel2: "OK",
-            btnLabel: "",
-            onClose: handleResponseCloseModal,
-          });
-        }
-      } catch (error) {
-        console.error("Error deleting student:", error);
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+      if (response.ok) {
+        console.log("Teacher deleted successfully");
+        fetchData(); // Refresh the data after deletion
+        setResponseModal({
+          ...responseModal,
+          open: true,
+          title: "Success",
+          message: "Teacher deleted successfully",
+          btnConfirm: false,
+          success: true,
+          btnLabel2: "OK",
+          btnLabel: "",
+          onClose: handleResponseCloseModal,
+        });
+      } else {
+        console.error("Failed to delete student");
         setResponseModal({
           ...responseModal,
           open: true,
           title: "Error",
-          message: "Error deleting Teacher",
+          message: "Failed to delete Teacher",
           btnConfirm: false,
           success: false,
           btnLabel2: "OK",
@@ -176,8 +158,22 @@ const StudentEnrollmentPage = () => {
           onClose: handleResponseCloseModal,
         });
       }
-    };
-  
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      setResponseModal({
+        ...responseModal,
+        open: true,
+        title: "Error",
+        message: "Error deleting Teacher",
+        btnConfirm: false,
+        success: false,
+        btnLabel2: "OK",
+        btnLabel: "",
+        onClose: handleResponseCloseModal,
+      });
+    }
+  };
+
   return (
     <div>
       <Header title="Student Enrollment" />
@@ -192,11 +188,8 @@ const StudentEnrollmentPage = () => {
               <FiUserPlus />
               Add New Student
             </button>
-       
           </div>
         </div>
-
-       
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
@@ -228,7 +221,7 @@ const StudentEnrollmentPage = () => {
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <span className="text-blue-600 font-medium">
-                              {student.avatar}
+                              {/* {student.avatar} */}
                             </span>
                           </div>
                           <div className="ml-4">
@@ -256,15 +249,16 @@ const StudentEnrollmentPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                           <button
-                            onClick={() =>{
+                          <button
+                            onClick={() => {
                               console.log(student._id);
                               setID(student._id);
                               setResponseModal({
                                 ...responseModal,
                                 open: true,
                                 title: "Delete Teacher",
-                                message: "Are you sure you want to delete this Teacher?",
+                                message:
+                                  "Are you sure you want to delete this Teacher?",
                                 btnConfirm: true,
                                 success: false,
                                 btnLabel2: "Delete",
@@ -272,8 +266,9 @@ const StudentEnrollmentPage = () => {
                                 onClose: handleResponseCloseModal,
                                 onConfirm: handleDelete,
                               });
-                              }}
-                           className="text-red-600 hover:text-red-900">
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
                             Delete
                           </button>
                         </div>
@@ -294,7 +289,6 @@ const StudentEnrollmentPage = () => {
             </table>
           </div>
         </div>
-
       </div>
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -315,12 +309,12 @@ const StudentEnrollmentPage = () => {
                 </div>
               )}
             </div>
-            <form onSubmit={
-              (e) => {
+            <form
+              onSubmit={(e) => {
                 e.preventDefault();
                 handleRegister();
-              }
-              }>
+              }}
+            >
               <div className="mb-4">
                 <label
                   htmlFor="username"
@@ -386,17 +380,17 @@ const StudentEnrollmentPage = () => {
           </div>
         </div>
       </Modal>
-        <ResponseModal
-              onClose={handleResponseCloseModal}
-              onConfirm={responseModal.onConfirm}
-              open={responseModal.open}
-              message={responseModal.message}
-              title={responseModal.title}
-              btnLabel2={responseModal.btnLabel2}
-              btnConfirm={responseModal.btnConfirm}
-              btnLabel={responseModal.btnLabel}
-              success={responseModal.success}
-            />
+      <ResponseModal
+        onClose={handleResponseCloseModal}
+        onConfirm={responseModal.onConfirm}
+        open={responseModal.open}
+        message={responseModal.message}
+        title={responseModal.title}
+        btnLabel2={responseModal.btnLabel2}
+        btnConfirm={responseModal.btnConfirm}
+        btnLabel={responseModal.btnLabel}
+        success={responseModal.success}
+      />
     </div>
   );
 };

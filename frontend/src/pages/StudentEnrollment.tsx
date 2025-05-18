@@ -175,7 +175,7 @@ const StudentEnrollmentPage = () => {
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <span className="text-blue-600 font-medium">
-                              {student.avatar}
+                              {/* {student.avatar} */}
                             </span>
                           </div>
                           <div className="ml-4">

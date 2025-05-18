@@ -168,8 +168,7 @@ const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
                   fontSize: 18,
                 }}
               >
-                AD
-                {getInitials()}
+                AD {/* {getInitials()} */}
               </Avatar>
             </IconButton>
           </Tooltip>

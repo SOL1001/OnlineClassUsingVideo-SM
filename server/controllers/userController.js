@@ -2,7 +2,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const Assignment = require("../models/Assignment");
 const Submission = require("../models/Submission");
-
+const fs = require("fs");
+const path = require("path");
 // Register a new user
 exports.registerUser = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ exports.registerUser = async (req, res) => {
       username,
       email,
       password,
-      role: role || "student", 
+      role: role || "student",
     });
     await user.save();
 
@@ -52,7 +53,7 @@ exports.registerUser = async (req, res) => {
 // Login user
 exports.loginUser = async (req, res) => {
   try {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
     // Validate input
     if (!email || !password) {
@@ -63,8 +64,8 @@ exports.loginUser = async (req, res) => {
     }
 
     // Find user
-  const user = await User.findOne({ email });
-  if (!user) {
+    const user = await User.findOne({ email });
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: "Invalid credentials",
@@ -85,7 +86,7 @@ exports.loginUser = async (req, res) => {
     await user.save();
 
     // Create token
-  const token = jwt.sign(
+    const token = jwt.sign(
       {
         id: user._id,
         role: user.role,
@@ -105,6 +106,7 @@ exports.loginUser = async (req, res) => {
         user: {
           id: user._id,
           username: user.username,
+          avatar: user.avatar,
           email: user.email,
           role: user.role,
           status: user.status,
@@ -322,14 +324,18 @@ exports.deleteUser = async (req, res) => {
 
   // Validate MongoDB ObjectId
   if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ success: false, message: "Invalid user ID format" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid user ID format" });
   }
 
   try {
     const deletedUser = await User.findByIdAndDelete(userId);
 
     if (!deletedUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     res.status(200).json({
@@ -351,3 +357,107 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+exports.updateAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const imgData = fs.readFileSync(req.file.path);
+    user.avatar = {
+      data: imgData,
+      contentType: req.file.mimetype,
+    };
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Avatar updated and stored in DB",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update avatar",
+      error: error.message,
+    });
+  }
+};
+// exports.updateAvatar = async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "No file uploaded" });
+//     }
+
+//     const userId = req.user._id;
+
+//     const avatarUrl = `${req.protocol}://${req.get("host")}/uploads/avatars/${
+//       req.file.filename
+//     }`;
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { avatar: avatarUrl },
+//       { new: true }
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Avatar updated successfully",
+//       data: updatedUser,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to update avatar",
+//       error: error.message,
+//     });
+//   }
+// };
+
+// controllers/userController.js
+exports.getMyAvatar = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id); // or use req.params.id
+    if (!user || !user.avatar || !user.avatar.data) {
+      return res.status(404).send("Avatar not found");
+    }
+
+    res.set("Content-Type", user.avatar.contentType);
+    res.send(user.avatar.data);
+  } catch (error) {
+    res.status(500).send("Error fetching avatar");
+  }
+};
+
+// exports.getMyAvatar = async (req, res) => {
+//   try {
+//     const user = req.user;
+
+//     if (!user.avatar) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Avatar not set" });
+//     }
+
+//     const avatarUrl = `${req.protocol}://${req.get("host")}${user.avatar}`;
+
+//     res
+//       .status(200)
+//       .json({ success: true, avatar: avatarUrl, username: user.username });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error fetching avatar",
+//       error: error.message,
+//     });
+//   }
+// };
