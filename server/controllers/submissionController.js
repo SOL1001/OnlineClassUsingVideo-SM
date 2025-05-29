@@ -161,3 +161,23 @@ exports.gradeSubmission = async (req, res) => {
     });
   }
 };
+// Get all student submissions
+exports.getAllStudentSubmissions = async (req, res) => {
+  try {
+    const submissions = await Submission.find()
+      .populate("student", "name email") // assuming student is a ref to User
+      .populate("assignment", "title description dueDate maxScore")
+      .sort({ submittedAt: -1 });
+
+    res.json({
+      success: true,
+      data: submissions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching all submissions",
+      error: error.message,
+    });
+  }
+};

@@ -8,13 +8,14 @@ const {
   getStudentSubmissions,
   submitAssignment,
   gradeSubmission,
+  getAllStudentSubmissions,
 } = require("../controllers/submissionController");
 
 // Teacher routes
 router.get("/teacher", protect, getTeacherSubmissions);
 router.get("/assignment/:assignmentId", protect, getAssignmentSubmissions);
 router.put("/:submissionId/grade", protect, gradeSubmission);
-
+router.get("/all", getAllStudentSubmissions);
 // Student routes
 router.get("/student", protect, getStudentSubmissions);
 router.post(

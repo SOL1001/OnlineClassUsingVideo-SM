@@ -8,6 +8,7 @@ import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 // import SchoolIcon from "@mui/icons-material/School";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
 import logo from "../assets/logo.png";
+import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 interface NavItem {
   path: string;
   label: string;
@@ -33,6 +34,12 @@ const Sidebar: React.FC<{
     {
       path: "/Assignments",
       label: "Assignments",
+      icon: <AssignmentAddIcon />,
+    },
+     {
+      path: "/subAss",
+      label: "Assignments Submission",
+     
       icon: <AssignmentIcon />,
     },
     {

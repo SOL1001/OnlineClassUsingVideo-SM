@@ -18,6 +18,7 @@ import Notifications from "./pages/Notifications";
 import Class from "./pages/Class";
 import Video from "./pages/video/Class";
 import ProfilePage from "./pages/ProfilePage";
+import SubAss from "./pages/SubAss";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -162,6 +163,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute isLoggedIn={isLoggedIn}>
                   <Video />
+                </ProtectedRoute>
+              }
+            />
+              <Route
+              path="/subass"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <SubAss />
                 </ProtectedRoute>
               }
             />
